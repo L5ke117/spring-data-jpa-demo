@@ -1,5 +1,6 @@
 package com.luke.springdatajpademo.repository;
 
+import com.luke.springdatajpademo.dto.BookNameAndDesc;
 import com.luke.springdatajpademo.entity.BookEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -98,6 +99,22 @@ class BookRepositoryTests {
     void testNamedNativeQuery() {
         BookEntity namedNativeQueryResult = bookRepository.namedNativeQuery(TLOR_NAME, TLOR_DESC);
         assertNotNull(namedNativeQueryResult);
+    }
+
+    @Test
+    void testJpqlQueryWithDtoProjection() {
+        BookNameAndDesc jpqlQueryWithDtoProjectionResult = bookRepository.jpqlQueryWithDtoProjection(TLOR_NAME);
+        assertNotNull(jpqlQueryWithDtoProjectionResult);
+        assertNotNull(jpqlQueryWithDtoProjectionResult.getName());
+        assertNotNull(jpqlQueryWithDtoProjectionResult.getDescription());
+    }
+
+    @Test
+    void testNamedNativeQueryWithDtoProjection() {
+        BookNameAndDesc namedNativeQueryWithDtoProjectionResult = bookRepository.namedNativeQueryWithDtoProjection(TLOR_NAME);
+        assertNotNull(namedNativeQueryWithDtoProjectionResult);
+        assertNotNull(namedNativeQueryWithDtoProjectionResult.getName());
+        assertNotNull(namedNativeQueryWithDtoProjectionResult.getDescription());
     }
 
 }

@@ -1,5 +1,6 @@
 package com.luke.springdatajpademo.repository;
 
+import com.luke.springdatajpademo.dto.BookNameAndDesc;
 import com.luke.springdatajpademo.entity.BookEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,13 @@ public interface BookRepository extends CrudRepository<BookEntity, Long> {
 
     BookEntity namedQuery2(String name, Integer year);
 
-    @Query(name = "BookEntity.namedNativeQuery")
+    @Query(name = "BookEntity.namedNativeQuery", nativeQuery = true)
     BookEntity namedNativeQuery(String name, String description);
+
+    @Query(value = "SELECT new com.luke.springdatajpademo.dto.BookNameAndDesc(b.name, b.description) FROM BookEntity b where b.name = ?1")
+    BookNameAndDesc jpqlQueryWithDtoProjection(String name);
+
+    @Query(name = "BookEntity.namedNativeQueryWithDtoProjection", nativeQuery = true)
+    BookNameAndDesc namedNativeQueryWithDtoProjection(String name);
+
 }
