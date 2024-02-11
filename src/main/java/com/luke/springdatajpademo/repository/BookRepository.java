@@ -25,10 +25,19 @@ public interface BookRepository extends CrudRepository<BookEntity, Long> {
     @Query(name = "BookEntity.findByNameAndDescription")
     BookEntity namedQuery1(String name, String description);
 
+    @Query(name = "BookEntity.findByNameAndDescription")
+    List<BookEntity> namedQuery1WithListResult(String name, String description);
+
     BookEntity namedQuery2(String name, Integer year);
 
     @Query(name = "BookEntity.namedNativeQuery", nativeQuery = true)
     BookEntity namedNativeQuery(String name, String description);
+
+    @Query(value = "SELECT b FROM BookEntity b")
+    List<BookEntity> repoJpqlQuery1();
+
+    @Query(value = "SELECT * FROM book WHERE name = ?", nativeQuery = true)
+    List<BookEntity> repoNativeQuery1(String name);
 
     @Query(value = "SELECT new com.luke.springdatajpademo.dto.BookNameAndDesc(b.name, b.description) FROM BookEntity b where b.name = ?1")
     BookNameAndDesc jpqlQueryWithDtoProjection(String name);

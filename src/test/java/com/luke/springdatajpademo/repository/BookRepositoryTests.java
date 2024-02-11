@@ -90,6 +90,12 @@ class BookRepositoryTests {
     }
 
     @Test
+    void testNamedQuery1WithListResult() {
+        List<BookEntity> namedQuery1WithListResult = bookRepository.namedQuery1WithListResult(TLOR_NAME, TLOR_DESC);
+        assertFalse(namedQuery1WithListResult.isEmpty());
+    }
+
+    @Test
     void testNamedQuery2() {
         BookEntity namedQueryResult = bookRepository.namedQuery2(TLOR_NAME, 2024);
         assertNotNull(namedQueryResult);
@@ -99,6 +105,18 @@ class BookRepositoryTests {
     void testNamedNativeQuery() {
         BookEntity namedNativeQueryResult = bookRepository.namedNativeQuery(TLOR_NAME, TLOR_DESC);
         assertNotNull(namedNativeQueryResult);
+    }
+
+    @Test
+    void testRepoJpqlQuery1() {
+        List<BookEntity> repoJpqlQueryListResult = bookRepository.repoJpqlQuery1();
+        assertFalse(repoJpqlQueryListResult.isEmpty());
+    }
+
+    @Test
+    void testRepoNativeQuery1() {
+        List<BookEntity> repoNativeQueryListResult = bookRepository.repoNativeQuery1(TLOR_NAME);
+        assertFalse(repoNativeQueryListResult.isEmpty());
     }
 
     @Test
