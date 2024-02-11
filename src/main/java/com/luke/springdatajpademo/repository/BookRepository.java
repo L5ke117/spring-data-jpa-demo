@@ -4,6 +4,7 @@ import com.luke.springdatajpademo.entity.BookEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +20,12 @@ public interface BookRepository extends CrudRepository<BookEntity, Long> {
     Page<BookEntity> findAllByName(String name, Pageable pageable);
 
     Slice<BookEntity> findAllByDescription(String description, Pageable pageable);
+
+    @Query(name = "BookEntity.findByNameAndDescription")
+    BookEntity namedQuery1(String name, String description);
+
+    BookEntity namedQuery2(String name, Integer year);
+
+    @Query(name = "BookEntity.namedNativeQuery")
+    BookEntity namedNativeQuery(String name, String description);
 }

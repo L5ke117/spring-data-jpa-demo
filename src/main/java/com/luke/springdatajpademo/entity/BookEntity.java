@@ -6,6 +6,9 @@ import lombok.Data;
 
 @Data
 @Entity
+@NamedQuery(name = "BookEntity.findByNameAndDescription", query = "SELECT b from BookEntity b WHERE b.name = ?1 and b.description = ?2")
+@NamedQuery(name = "BookEntity.namedQuery2", query = "SELECT b from BookEntity b WHERE b.name = ?1 and b.year = ?2")
+@NamedNativeQuery(name = "BookEntity.namedNativeQuery", query = "SELECT * from book WHERE name = ? and description = ?", resultClass = BookEntity.class)
 @Table(name = "book")
 public class BookEntity {
 
