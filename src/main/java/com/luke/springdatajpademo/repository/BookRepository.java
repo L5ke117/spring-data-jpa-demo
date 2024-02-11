@@ -18,9 +18,10 @@ public interface BookRepository extends CrudRepository<BookEntity, Long> {
 
     List<BookEntity>  findAllByPublisher(String publisher, Pageable pageable);
 
-    Page<BookEntity> findAllByName(String name, Pageable pageable);
-
     Slice<BookEntity> findAllByDescription(String description, Pageable pageable);
+
+    // Page requires an extra query to get total count
+    Page<BookEntity> findAllByName(String name, Pageable pageable);
 
     @Query(name = "BookEntity.findByNameAndDescription")
     BookEntity namedQuery1(String name, String description);

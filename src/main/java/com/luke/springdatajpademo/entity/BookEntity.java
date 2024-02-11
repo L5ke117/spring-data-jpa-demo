@@ -2,11 +2,17 @@ package com.luke.springdatajpademo.entity;
 
 import com.luke.springdatajpademo.dto.BookNameAndDesc;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @NamedQuery(name = "BookEntity.findByNameAndDescription", query = "SELECT b from BookEntity b WHERE b.name = ?1 and b.description = ?2")
 @NamedQuery(name = "BookEntity.namedQuery2", query = "SELECT b from BookEntity b WHERE b.name = ?1 and b.year = ?2")
 @NamedNativeQuery(name = "BookEntity.namedNativeQuery", query = "SELECT * from book WHERE name = ? and description = ?", resultClass = BookEntity.class)

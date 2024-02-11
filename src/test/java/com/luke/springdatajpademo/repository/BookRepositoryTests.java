@@ -32,14 +32,14 @@ class BookRepositoryTests {
 
     @BeforeEach
     void setUp() {
-        BookEntity bookEntity = new BookEntity();
-        bookEntity.setName(TLOR_NAME);
-        bookEntity.setDescription(TLOR_DESC);
-        bookEntity.setPublisher(PUBLISHER);
-        bookEntity.setYear(2024);
-        bookEntity.setAuthorId(1L);
+        BookEntity bookEntity1 = new BookEntity();
+        bookEntity1.setName(TLOR_NAME);
+        bookEntity1.setDescription(TLOR_DESC);
+        bookEntity1.setPublisher(PUBLISHER);
+        bookEntity1.setYear(2024);
+        bookEntity1.setAuthorId(1L);
 
-        entityManager.persist(bookEntity);
+        entityManager.persist(bookEntity1);
     }
     
     @Test
@@ -64,23 +64,35 @@ class BookRepositoryTests {
 
     @Test
     void testPageRequestWithList() {
-        PageRequest pageRequestByPublisher = PageRequest.of(0, 2, Sort.by("name").descending());
+        insertDataForPagingTests();
+        PageRequest pageRequestByPublisher = PageRequest.of(1, 1, Sort.by("name").descending());
         List<BookEntity> allByPublisher = bookRepository.findAllByPublisher(PUBLISHER, pageRequestByPublisher);
         assertFalse(allByPublisher.isEmpty());
     }
 
     @Test
-    void testPageRequestWithPage() {
-        PageRequest pageRequestByName = PageRequest.of(0, 2, Sort.by("description").descending());
-        Page<BookEntity> allByName = bookRepository.findAllByName(TLOR_NAME, pageRequestByName);
-        assertFalse(allByName.isEmpty());
+    void testPageRequestWithSlice() {
+        insertDataForPagingTests();
+        PageRequest pageRequestByDescription = PageRequest.of(1, 1, Sort.by("publisher").descending());
+        Slice<BookEntity> sliceByDescription = bookRepository.findAllByDescription("desc", pageRequestByDescription);
+        assertFalse(sliceByDescription.isEmpty());
+        assertFalse(sliceByDescription.isFirst());
+        assertFalse(sliceByDescription.isLast());
+        assertTrue(sliceByDescription.hasPrevious());
+        assertTrue(sliceByDescription.hasNext());
     }
 
     @Test
-    void testPageRequestWithSlice() {
-        PageRequest pageRequestByDescription = PageRequest.of(0, 2, Sort.by("publisher").descending());
-        Slice<BookEntity> allByDescription = bookRepository.findAllByDescription(TLOR_DESC, pageRequestByDescription);
-        assertFalse(allByDescription.isEmpty());
+    void testPageRequestWithPage() {
+        insertDataForPagingTests();
+        PageRequest pageRequestByName = PageRequest.of(0, 1, Sort.by("description").descending());
+        Page<BookEntity> pageByName = bookRepository.findAllByName("name", pageRequestByName);
+        assertFalse(pageByName.isEmpty());
+        assertEquals(3, pageByName.getTotalPages());
+        PageRequest pageRequestByName2 = PageRequest.of(1, 1);
+        Page<BookEntity> pageByName2 = bookRepository.findAllByName("name", pageRequestByName2);
+        assertFalse(pageByName2.isEmpty());
+        assertEquals(3, pageByName2.getTotalPages());
     }
 
     @Test
@@ -133,6 +145,15 @@ class BookRepositoryTests {
         assertNotNull(namedNativeQueryWithDtoProjectionResult);
         assertNotNull(namedNativeQueryWithDtoProjectionResult.getName());
         assertNotNull(namedNativeQueryWithDtoProjectionResult.getDescription());
+    }
+
+    private void insertDataForPagingTests() {
+        BookEntity bookEntity2 = BookEntity.builder().name("name").description("desc").year(2024).publisher(PUBLISHER).authorId(1L).build();
+        entityManager.persist(bookEntity2);
+        BookEntity bookEntity3 = BookEntity.builder().name("name").description("desc").year(2024).publisher(PUBLISHER).authorId(1L).build();
+        entityManager.persist(bookEntity3);
+        BookEntity bookEntity4 = BookEntity.builder().name("name").description("desc").year(2024).publisher(PUBLISHER).authorId(1L).build();
+        entityManager.persist(bookEntity4);
     }
 
 }
