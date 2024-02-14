@@ -138,9 +138,24 @@ class BookRepositoryTests {
     }
 
     @Test
+    void testRepoJpqlQuery2() {
+        insertDataForPagingTests();
+        PageRequest pageRequest = PageRequest.of(1, 1);
+        List<BookEntity> repoJpqlQuery2Result = bookRepository.repoJpqlQuery2(pageRequest);
+        assertFalse(repoJpqlQuery2Result.isEmpty());
+    }
+
+    @Test
     void testRepoNativeQuery1() {
-        List<BookEntity> repoNativeQueryListResult = bookRepository.repoNativeQuery1(LOTR_NAME);
-        assertFalse(repoNativeQueryListResult.isEmpty());
+        List<BookEntity> repoNativeQuery1ListResult = bookRepository.repoNativeQuery1(LOTR_NAME);
+        assertFalse(repoNativeQuery1ListResult.isEmpty());
+    }
+
+    @Test
+    void testRepoNativeQuery2() {
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        List<BookEntity> repoNativeQuery2ListResult = bookRepository.repoNativeQuery2(LOTR_NAME, pageRequest);
+        assertFalse(repoNativeQuery2ListResult.isEmpty());
     }
 
     @Test

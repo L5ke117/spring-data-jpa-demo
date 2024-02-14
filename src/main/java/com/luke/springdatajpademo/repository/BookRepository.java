@@ -51,8 +51,14 @@ public interface BookRepository extends CrudRepository<BookEntity, Long> {
     @Query(value = "SELECT b FROM BookEntity b")
     List<BookEntity> repoJpqlQuery1();
 
+    @Query(value = "SELECT b FROM BookEntity b")
+    List<BookEntity> repoJpqlQuery2(Pageable pageable);
+
     @Query(value = "SELECT * FROM book WHERE name = ?", nativeQuery = true)
     List<BookEntity> repoNativeQuery1(String name);
+
+    @Query(value = "SELECT * FROM book WHERE name = ?", nativeQuery = true)
+    List<BookEntity> repoNativeQuery2(String name, Pageable pageable);
 
     @Query(value = "UPDATE BookEntity SET name = :prefix || name WHERE publisher= :publisher")
     @Modifying
