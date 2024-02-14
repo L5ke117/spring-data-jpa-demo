@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class BookRepositoryTests {
 
-    public static final String TLOR_NAME = "The Lord of the Rings";
-    public static final String TLOR_DESC = "masterpiece";
+    public static final String LOTR_NAME = "The Lord of the Rings";
+    public static final String LOTR_DESC = "masterpiece";
     public static final String PUBLISHER = "Luke";
     @Autowired
     private TestEntityManager entityManager;
@@ -33,8 +33,8 @@ class BookRepositoryTests {
     @BeforeEach
     void setUp() {
         BookEntity bookEntity1 = new BookEntity();
-        bookEntity1.setName(TLOR_NAME);
-        bookEntity1.setDescription(TLOR_DESC);
+        bookEntity1.setName(LOTR_NAME);
+        bookEntity1.setDescription(LOTR_DESC);
         bookEntity1.setPublisher(PUBLISHER);
         bookEntity1.setYear(2024);
         bookEntity1.setAuthorId(1L);
@@ -58,8 +58,20 @@ class BookRepositoryTests {
 
     @Test
     void testFindByName() {
-        BookEntity theLordOfTheRings = bookRepository.findByName(TLOR_NAME);
+        BookEntity theLordOfTheRings = bookRepository.findByName(LOTR_NAME);
         assertNotNull(theLordOfTheRings);
+    }
+
+    @Test
+    void testFindByNameLike() {
+        List<BookEntity> byNameLike = bookRepository.findByNameLike(LOTR_NAME);
+        assertFalse(byNameLike.isEmpty());
+    }
+
+    @Test
+    void testFindFirst5ByNameContainsOrderByDescriptionDesc() {
+        List<BookEntity> first5ByNameContainsOrderByDescriptionDesc = bookRepository.findFirst5ByNameContainsOrderByDescriptionDesc(LOTR_NAME);
+        assertFalse(first5ByNameContainsOrderByDescriptionDesc.isEmpty());
     }
 
     @Test
@@ -97,25 +109,25 @@ class BookRepositoryTests {
 
     @Test
     void testNamedQuery1() {
-        BookEntity namedQueryResult = bookRepository.namedQuery1(TLOR_NAME, TLOR_DESC);
+        BookEntity namedQueryResult = bookRepository.namedQuery1(LOTR_NAME, LOTR_DESC);
         assertNotNull(namedQueryResult);
     }
 
     @Test
     void testNamedQuery1WithListResult() {
-        List<BookEntity> namedQuery1WithListResult = bookRepository.namedQuery1WithListResult(TLOR_NAME, TLOR_DESC);
+        List<BookEntity> namedQuery1WithListResult = bookRepository.namedQuery1WithListResult(LOTR_NAME, LOTR_DESC);
         assertFalse(namedQuery1WithListResult.isEmpty());
     }
 
     @Test
     void testNamedQuery2() {
-        BookEntity namedQueryResult = bookRepository.namedQuery2(TLOR_NAME, 2024);
+        BookEntity namedQueryResult = bookRepository.namedQuery2(LOTR_NAME, 2024);
         assertNotNull(namedQueryResult);
     }
 
     @Test
     void testNamedNativeQuery() {
-        BookEntity namedNativeQueryResult = bookRepository.namedNativeQuery(TLOR_NAME, TLOR_DESC);
+        BookEntity namedNativeQueryResult = bookRepository.namedNativeQuery(LOTR_NAME, LOTR_DESC);
         assertNotNull(namedNativeQueryResult);
     }
 
@@ -127,13 +139,29 @@ class BookRepositoryTests {
 
     @Test
     void testRepoNativeQuery1() {
-        List<BookEntity> repoNativeQueryListResult = bookRepository.repoNativeQuery1(TLOR_NAME);
+        List<BookEntity> repoNativeQueryListResult = bookRepository.repoNativeQuery1(LOTR_NAME);
         assertFalse(repoNativeQueryListResult.isEmpty());
     }
 
     @Test
+    void testCustomUpdate() {
+        assertDoesNotThrow(() -> bookRepository.customUpdate("Prefix", PUBLISHER));
+        BookEntity byOldName = bookRepository.findByName(LOTR_NAME);
+        assertNull(byOldName);
+        BookEntity byNewName = bookRepository.findByName("Prefix" + LOTR_NAME);
+        assertNotNull(byNewName);
+    }
+
+    @Test
+    void testCustomDelete() {
+        assertDoesNotThrow(() -> bookRepository.customDelete(LOTR_NAME));
+        BookEntity bookEntity = bookRepository.findByName(LOTR_NAME);
+        assertNull(bookEntity);
+    }
+
+    @Test
     void testJpqlQueryWithDtoProjection() {
-        BookNameAndDesc jpqlQueryWithDtoProjectionResult = bookRepository.jpqlQueryWithDtoProjection(TLOR_NAME);
+        BookNameAndDesc jpqlQueryWithDtoProjectionResult = bookRepository.jpqlQueryWithDtoProjection(LOTR_NAME);
         assertNotNull(jpqlQueryWithDtoProjectionResult);
         assertNotNull(jpqlQueryWithDtoProjectionResult.getName());
         assertNotNull(jpqlQueryWithDtoProjectionResult.getDescription());
@@ -141,7 +169,7 @@ class BookRepositoryTests {
 
     @Test
     void testNamedNativeQueryWithDtoProjection() {
-        BookNameAndDesc namedNativeQueryWithDtoProjectionResult = bookRepository.namedNativeQueryWithDtoProjection(TLOR_NAME);
+        BookNameAndDesc namedNativeQueryWithDtoProjectionResult = bookRepository.namedNativeQueryWithDtoProjection(LOTR_NAME);
         assertNotNull(namedNativeQueryWithDtoProjectionResult);
         assertNotNull(namedNativeQueryWithDtoProjectionResult.getName());
         assertNotNull(namedNativeQueryWithDtoProjectionResult.getDescription());
